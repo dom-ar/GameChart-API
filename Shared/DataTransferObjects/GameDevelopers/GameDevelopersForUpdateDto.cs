@@ -1,0 +1,3 @@
+﻿namespace Shared.DataTransferObjects.GameDevelopers;
+
+public record GameDevelopersForUpdateDto : GameDevelopersForManipulationDto;

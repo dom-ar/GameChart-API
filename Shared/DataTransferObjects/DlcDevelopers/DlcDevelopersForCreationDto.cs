@@ -1,0 +1,3 @@
+﻿namespace Shared.DataTransferObjects.DlcDevelopers;
+
+public record DlcDevelopersForCreationDto : DlcDevelopersForManipulationDto;
