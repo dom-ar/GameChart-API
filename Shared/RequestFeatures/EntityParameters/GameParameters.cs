@@ -12,8 +12,6 @@ public class GameParameters : RequestParameters
         // GameGenres
     public IEnumerable<int> GenreIds { get; set; } = new List<int>();
         // GameReleases
-    public int MinYear { get; set; } = 0;
-    public int MaxYear { get; set; } = int.MaxValue;
-
-    public bool ValidYearRange => MaxYear >= MinYear && MinYear >= 0;
+    public int? MinYear { get; set; }
+    public int? MaxYear { get; set; }
 }
