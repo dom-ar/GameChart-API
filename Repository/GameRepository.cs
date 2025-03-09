@@ -4,6 +4,7 @@ using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Shared.RequestFeatures;
 using Shared.RequestFeatures.EntityParameters;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace Repository
 {
@@ -72,6 +73,18 @@ namespace Repository
                     g.ReleasedOnYear.HasValue &&
                     g.ReleasedOnYear <= gameParameters.MaxYear &&
                     g.ReleasedOnYear >= min);
+            }
+
+            if (!string.IsNullOrWhiteSpace(gameParameters.SearchTerm))
+            {
+                var searchTerm = gameParameters.SearchTerm.Trim();
+                // add .ToLower(); if using trigrams
+
+                query = query.Where(g => EF.Functions.ILike(g.Title ?? "", $"%{searchTerm}%"));
+
+                // To be used for full web search, not individual
+                //query = query.Where(g => EF.Functions.ILike(g.Title ?? "", $"%{searchTerm}%") ||
+                //                        EF.Functions.TrigramsSimilarity(EF.Property<string>(g, "Title").ToLower(), searchTerm) > 0.1);
             }
 
             var count = await query.CountAsync();
