@@ -83,8 +83,18 @@ namespace Service
                     throw new GenreNotFoundException(invalidGenresList);
             }
 
-            if (!gameParameters.ValidYearRange)
-                throw new InvalidYearRangeException(gameParameters.MinYear, gameParameters.MaxYear);
+            //if (!gameParameters.MinYear.HasValue && !gameParameters.MaxYear.HasValue)
+            var minYear = gameParameters.MinYear;
+            var maxYear = gameParameters.MaxYear;
+
+            if (minYear.HasValue && minYear < 0)
+                        throw new InvalidYearRangeException(minYear.Value, "minYear");
+
+            if (maxYear.HasValue && maxYear < 0)
+                throw new InvalidYearRangeException(maxYear.Value, "maxYear");
+
+            if (minYear.HasValue && minYear > maxYear)
+                throw new InvalidYearRangeException(minYear.Value, maxYear.Value);
 
             // Get games
             var gamesWithMetaData = await _repository.Game.GetAllGamesAsync(gameParameters, trackChanges);

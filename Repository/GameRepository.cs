@@ -56,10 +56,23 @@ namespace Repository
                     g.GameGenres.Any(gg => gameParameters.GenreIds.Contains(gg.GenreId)));
             }
 
-            query = query.Where(g =>
-                g.ReleasedOnYear.HasValue && 
-                g.ReleasedOnYear >= gameParameters.MinYear && 
-                g.ReleasedOnYear <= gameParameters.MaxYear);
+            if (gameParameters.MinYear.HasValue)
+            {
+                const int max = int.MaxValue;
+                query = query.Where(g =>
+                    g.ReleasedOnYear.HasValue &&
+                    g.ReleasedOnYear >= gameParameters.MinYear &&
+                    g.ReleasedOnYear <= max);
+            }
+
+            if (gameParameters.MaxYear.HasValue)
+            {
+                const int min = 0;
+                query = query.Where(g =>
+                    g.ReleasedOnYear.HasValue &&
+                    g.ReleasedOnYear <= gameParameters.MaxYear &&
+                    g.ReleasedOnYear >= min);
+            }
 
             var count = await query.CountAsync();
 
