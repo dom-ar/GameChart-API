@@ -14,4 +14,5 @@ public class GameParameters : RequestParameters
         // GameReleases
     public int? MinYear { get; set; }
     public int? MaxYear { get; set; }
+    public string? SearchTerm { get; set; }
 }
