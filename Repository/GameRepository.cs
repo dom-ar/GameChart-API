@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Shared.RequestFeatures;
 using Shared.RequestFeatures.EntityParameters;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
+using System.Linq.Dynamic.Core;
+using Repository.Extensions;
+
 
 namespace Repository
 {
@@ -23,6 +26,7 @@ namespace Repository
                 .Include(g => g.GameDevelopers).ThenInclude(gd => gd.Developer)
                 .Include(g => g.GameGenres).ThenInclude(gg => gg.Genre)
                 .AsQueryable();
+
 
             if (gameParameters.FranchiseIds.Any())
             {
@@ -87,10 +91,11 @@ namespace Repository
                 //                        EF.Functions.TrigramsSimilarity(EF.Property<string>(g, "Title").ToLower(), searchTerm) > 0.1);
             }
 
+            query = query.Sort(gameParameters.OrderBy);
+
             var count = await query.CountAsync();
 
             var games = await query
-                .OrderBy(g => g.Id)
                 .Skip((gameParameters.PageNumber - 1) * gameParameters.PageSize)
                 .Take(gameParameters.PageSize)
                 .ToListAsync();
